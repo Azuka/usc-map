@@ -5,14 +5,10 @@ $(document)
             .tab()
         ;
 
-        $('.ui.rating')
-            .rating({
-                clearable: true
-            })
-        ;
-
-        $('.ui.sidebar').bind('show', function () {
-            $('input', this).focus();
+        $('.ui.sidebar').sidebar({
+            onShow: function() {
+                $('input', this).focus();
+            }
         })
             .sidebar('attach events', '.launch.button')
         ;

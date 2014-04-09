@@ -11,12 +11,15 @@
 
 	<link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="/css/semantic.css">
+	<link rel="stylesheet" type="text/css" href="/css/leaflet.awesome-markers.css">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.js"></script>
 	<link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
 	<script src="//cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
 	<script src="/javascript/semantic.js"></script>
+	<script src="/javascript/leaflet.awesome-markers.min.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="/css/feed.css">
 	<script src="/javascript/feed.js"></script>
@@ -81,17 +84,6 @@
 		</div>
 
 		<div class="ui divider"></div>
-
-		<div class="page">Showing <b>6</b> of 213</div>
-		<div class="ui pagination menu">
-			<a class="icon item"><i class="icon left arrow"></i></a>
-			<a class="active item">1</a>
-			<div class="disabled item">...</div>
-			<a class="item">10</a>
-			<a class="item">11</a>
-			<a class="item">12</a>
-			<a class="icon item"><i class="icon right arrow"></i></a>
-		</div>
 	</div>
 	<div class="twelve wide right column">
 		<div id="map"></div>
@@ -122,15 +114,23 @@ $(function(){
 
 	map.fitBounds(L.latLngBounds(southWest, northEast));
 
+	var defaultMarker = L.AwesomeMarkers.icon({
+		icon: 'location-arrow',
+		markerColor: 'cadetblue',
+		prefix: 'fa'
+	});
+	var bookMarker = L.AwesomeMarkers.icon({
+		icon: 'bookmark',
+		markerColor: 'red',
+		prefix: 'fa'
+	});
+
 	for (i = 0; i < buildings.length; i++)
 	{
-		marker = L.marker( L.latLng(buildings[i].lat, buildings[i].lng), {title: buildings[i].name, mid: i});
+		marker = L.marker( L.latLng(buildings[i].lat, buildings[i].lng), {title: buildings[i].name, mid: i, icon: defaultMarker});
 		marker.bindPopup('<strong>'+buildings[i].name+'</strong><br>'+buildings[i].short_name+'<p>'+buildings[i].address+'</p>').openPopup();
 
 		marker.on('mouseover', function(e){
-			console.log('.item[data-id='+this.mid+']');
-			console.log(this);
-			console.log(e);
 			$('.item[data-id='+ this.options.mid+']', '.four.wide').addClass('active');
 			this.openPopup();
 		});
@@ -141,8 +141,52 @@ $(function(){
 		markers.push(marker.addTo(map));
 	}
 
+	var sinput = $('.sidebar input'), keyTimeout, lastFilter, lis = $('.four.wide .item[data-id]');
+
+	sinput.blur(function() {
+		$('.ui.sidebar').sidebar('hide');
+	}).change(function(e) {
+		var numShown = 0;
+		$('.four.wide .item[data-id]').each(function(i, li){
+			if ($(li).data('search').toLowerCase().indexOf(sinput.val().toLowerCase()) >= 0) {
+				$(li).show();
+				numShown++;
+			} else {
+				$(li).hide();
+			}
+		});
+		e.preventDefault();
+	}).keydown(function() {
+		clearTimeout(keyTimeout);
+		keyTimeout = setTimeout(function() {
+			if( sinput.val() === lastFilter ) return;
+			lastFilter = sinput.val();
+			sinput.change();
+		}, 0);
+	});
+
+	$('.ui.rating').rating({
+		clearable: true,
+		onRate: function (e)
+		{
+			var $parent = $(this).closest('.item'),
+				$icon   = e == 1 ? bookMarker : defaultMarker;
+
+			markers[$parent.data('id')].setIcon($icon);
+		}
+	});
+
+	var prevMarker;
+
 	$('.four.wide .item[data-id]').on('click', function() {
-		markers[$(this).data('id')].openPopup();
+		if (prevMarker && (prevMarker !== markers[$(this).data('id')]))
+		{
+			prevMarker.setZIndexOffset(0);
+		}
+		markers[$(this).data('id')].setZIndexOffset(1000).openPopup();
+		prevMarker = markers[$(this).data('id')];
+	}).on('dblclick', function(){
+		map.setView(markers[$(this).data('id')].getLatLng(), 21);
 	});
 });
 </script>

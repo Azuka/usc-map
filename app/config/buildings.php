@@ -10,13 +10,13 @@ return array (
 			'lng' => -118.2855371,
 		),
 
-		/*array (
+		array (
 			'short_name' => 'WPH',
 			'name' => 'Waite Phillips Hall Of Education',
 			'address' => '3470 Trousdale Parkway Los Angeles CA 90089',
 			'lat' => 34.021954999999998,
 			'lng' => -118.283894,
-		),*/
+		),
 
 		array (
 			'short_name' => 'SOS',
@@ -826,13 +826,13 @@ return array (
 			'lng' => -118.28482339999999,
 		),
 
-		array (
+		/*array (
 			'short_name' => 'OHE',
 			'name' => 'Olin Hall Of Engineering',
 			'address' => '3650 Mcclintock Ave. Los Angeles CA 90089',
 			'lat' => 34.020701600000002,
 			'lng' => -118.2895911,
-		),
+		),*/
 
 		array (
 			'short_name' => 'SRH',
