@@ -39,4 +39,4 @@ deploy:
     - script:
         name: Login to server, update code and exit
         code: |-
-          ssh zahymaka@zahymaka.webfactional.com "cd ~/webapps/csci577 && git pull && wget -r https://getcomposer.org/composer.phar && php54 composer.phar install && exit"
+          ssh zahymaka@zahymaka.webfactional.com "cd ~/webapps/csci577 && git pull && php54 ~/composer.phar install && exit"
