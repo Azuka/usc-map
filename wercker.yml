@@ -1,0 +1,42 @@
+box: wercker/php
+build:
+  steps:
+    - script:
+        name: Install and check dependencies
+        code: |-
+            composer install --no-interaction --no-dev
+    - script:
+        name: Serve application for integration tests
+        code: php -S localhost:8000 >> /dev/null &
+    - script:
+        name: PHPUnit integration tests
+        code: phpunit --configuration phpunit.xml
+deploy:
+  steps:
+    - add-to-known_hosts:
+        hostname: zahymaka.webfactional.com
+    - script:
+        name: Make .SSH directory
+        code: mkdir -p "$HOME/.ssh"
+    - create-file:
+        name: Write SSH private key
+        filename: $HOME/.ssh/id_rsa
+        overwrite: true
+        content: $DEPLOY_KEY_PRIVATE
+    - script:
+        name: Set permissions for SSH private key
+        code: |-
+          chmod 0400 $HOME/.ssh/id_rsa
+    - create-file:
+        name: Write SSH public key
+        filename: $HOME/.ssh/id_rsa.pub
+        overwrite: true
+        content: $DEPLOY_KEY_PUBLIC
+    - script:
+        name: Set permissions for SSH public key
+        code: |-
+          chmod 0400 $HOME/.ssh/id_rsa.pub
+    - script:
+        name: Login to server, update code and exit
+        code: |-
+          ssh zahymaka@zahymaka.webfactional.com "cd ~/webapps/csci577 && git pull && exit"
