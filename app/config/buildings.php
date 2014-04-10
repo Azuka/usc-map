@@ -826,13 +826,13 @@ return array (
 			'lng' => -118.28482339999999,
 		),
 
-		/*array (
+		array (
 			'short_name' => 'OHE',
 			'name' => 'Olin Hall Of Engineering',
 			'address' => '3650 Mcclintock Ave. Los Angeles CA 90089',
 			'lat' => 34.020701600000002,
 			'lng' => -118.2895911,
-		),*/
+		),
 
 		array (
 			'short_name' => 'SRH',
