@@ -44,7 +44,7 @@
 		</div>
 		<h2 class="ui header">
 			<i class="map marker icon"></i>
-			USC Buildings
+			Buildings
 		</h2>
 		<div class="ui tabular filter menu">
 			<a class="active item" data-tab="upc">UPC</a>
